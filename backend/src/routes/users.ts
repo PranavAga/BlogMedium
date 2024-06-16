@@ -4,8 +4,6 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { z } from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { sign } from 'hono/jwt'
-// import { env } from 'hono/adapter'
-// import { withAccelerate } from '@prisma/extension-accelerate'
 
 type Bindings = {
     DATABASE_URL:string,
