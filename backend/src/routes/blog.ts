@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { authCheck } from '../middlewares/auth';
-import {z} from 'zod';
+import { blogInput } from '@pranav_agarwal/blogmedium-common';
 import { zValidator } from '@hono/zod-validator';
 import { Prisma, PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
@@ -14,11 +14,6 @@ type Bindings = {
     PRIVATE_KEY:string
 }
 
-const blogSchema = z.object({
-	title: z.string(),
-    content: z.string(),
-})
-
 const blogRouter = new Hono<{
 	Variables:Variables,
 	Bindings:Bindings
@@ -27,7 +22,7 @@ const blogRouter = new Hono<{
 blogRouter.use('*',authCheck);
 
 // create a blog
-blogRouter.post('', zValidator('json',blogSchema,(result, c) => {
+blogRouter.post('', zValidator('json',blogInput,(result, c) => {
 	if (!result.success)
 		return c.text('Invalid input format', 400)
 }), async(c) => {
@@ -100,7 +95,7 @@ blogRouter.get('/:id', async(c) => {
 })
 
 // update a post
-blogRouter.put('/:id',zValidator('json',blogSchema,(result, c) => {
+blogRouter.put('/:id',zValidator('json',blogInput,(result, c) => {
 	if (!result.success)
 		return c.text('Invalid input format', 400)
 }),	async (c) => {

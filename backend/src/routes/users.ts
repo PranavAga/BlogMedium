@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { Prisma, PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { z } from 'zod'
+import { signinInput, signupInput } from '@pranav_agarwal/blogmedium-common'
 import { zValidator } from '@hono/zod-validator'
 import { sign } from 'hono/jwt'
 
@@ -12,19 +12,7 @@ type Bindings = {
 
 const userRouter = new Hono<{Bindings:Bindings }>();
 
-const signupSchema = z.object({
-    name: z.string().optional(),
-    email: z.string().email(),
-    password: z.string().min(3)
-})
-
-const signinSchema = z.object({
-    email: z.string().email(),
-    password: z.string()
-})
-
-
-userRouter.post('/signup',zValidator('json',signupSchema,(result, c) => {
+userRouter.post('/signup',zValidator('json',signupInput,(result, c) => {
         if (!result.success)
             return c.text('Invalid input format', 400)
     }), async(c) => {
@@ -57,7 +45,7 @@ userRouter.post('/signup',zValidator('json',signupSchema,(result, c) => {
 
 })
 
-userRouter.post('/signin', zValidator('json',signinSchema,(result, c) => {
+userRouter.post('/signin', zValidator('json',signinInput,(result, c) => {
     if (!result.success) {
         return c.text('Invalid input format', 400)
     }
