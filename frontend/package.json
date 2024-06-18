@@ -10,11 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pranav_agarwal/blogmedium-common": "^1.0.1",
+    "@pranav_agarwal/blogmedium-common": "^1.0.2",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-loader-spinner": "^6.1.6",
     "react-router-dom": "^6.23.1"
   },
   "devDependencies": {

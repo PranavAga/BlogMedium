@@ -4,13 +4,18 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { signinInput, signupInput } from '@pranav_agarwal/blogmedium-common'
 import { zValidator } from '@hono/zod-validator'
 import { sign } from 'hono/jwt'
+import { authCheck } from '../middlewares/auth'
+
+type Variables={
+	userId: string
+};
 
 type Bindings = {
     DATABASE_URL:string,
     PRIVATE_KEY:string
 }
 
-const userRouter = new Hono<{Bindings:Bindings }>();
+const userRouter = new Hono<{Bindings:Bindings, Variables:Variables }>();
 
 userRouter.post('/signup',zValidator('json',signupInput,(result, c) => {
         if (!result.success)
@@ -84,6 +89,35 @@ userRouter.post('/signin', zValidator('json',signinInput,(result, c) => {
         return c.text('Server Error',500)
     }
 
+});
+
+userRouter.get('/info',authCheck,async(c) => {
+    const id = c.get('userId');
+
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+    
+    try{
+        const user = await prisma.user.findUnique({
+            where:{
+                id:id
+            },
+            select:{
+				id:true,
+				email:true,
+                name:true
+			}
+        });
+    
+        return c.json(user);
+    }
+    catch (e:any) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            return c.text('DB Error',400)
+        }
+        return c.text('Server Error',500)
+    }
 })
 
 export default userRouter

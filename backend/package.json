@@ -1,12 +1,12 @@
 {
-  "name": "backend",
+  "name": "backend-blogmedium",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.2.2",
-    "@pranav_agarwal/blogmedium-common": "^1.0.1",
+    "@pranav_agarwal/blogmedium-common": "^1.0.2",
     "@prisma/client": "^5.15.0",
     "@prisma/extension-accelerate": "^1.1.0",
     "hono": "^4.4.6",

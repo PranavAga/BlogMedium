@@ -45,7 +45,7 @@ export const Signup = ()=>{
 
     return(
         <>
-            <div className="bg-grey-light grid grid-cols-1 lg:grid-cols-2">
+            <div className="bg-grey-light grid grid-cols-1 lg:grid-cols-2 h-screen">
                 <div className="bg-white rounded-sm shadow-sm m-1 flex flex-col justify-center items-center">
                 <div className="space-y-4">
                         <CenterHeading title={title} sub={null}/>

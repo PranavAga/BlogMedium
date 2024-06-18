@@ -40,7 +40,9 @@ blogRouter.post('', zValidator('json',blogInput,(result, c) => {
             data:{
 				title:body.title,
 				content: body.content,
-				authorId: userId
+				authorId: userId,
+                published: body.published,
+                publishDate: body.published? Date(): null
 			},
 			select:{
 				id:true
@@ -52,7 +54,7 @@ blogRouter.post('', zValidator('json',blogInput,(result, c) => {
 
     catch (e:any) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            return c.text('',400)
+            return c.text('DB Error',400)
         }
         return c.text('Server Error',500);
     }
@@ -67,28 +69,42 @@ blogRouter.get('/:id', async(c) => {
     }).$extends(withAccelerate());
 
 	try{
-        const post = await prisma.post.findUnique({
+        const post = await prisma.post.findMany({
             where:{
-                authorId: c.get("userId"),
-                id:id
+                OR:[
+                    {
+                        authorId: c.get("userId"),
+                        id:id
+                    },
+                    {
+                        published: true,
+                        id:id
+                    }
+                ]
             },
 			select:{
 				id:true,
 				title:true,
 				content:true,
-				published:true
+				published:true,
+                publishDate:true,
+                author:{
+                    select:{
+                        name:true
+                    }
+                }
 			}
         })
     
-        if(!post){
-            return c.text("Blog not found/ don't have access",404);
+        if(post.length==0){
+            return c.text("Blog not found, not published, or you don't have access",404);
         }
     
-        return c.json(post);
+        return c.json({"post":post[0]});
     }
     catch (e:any) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            return c.text('',400)
+            return c.text('DB Error',400)
         }
         return c.text('Server Error',500)
     }
@@ -116,6 +132,8 @@ blogRouter.put('/:id',zValidator('json',blogInput,(result, c) => {
             data:{
 				title:body.title,
 				content: body.content,
+                published: body.published,
+                publishDate: body.published? new Date(): null
 			},
 			select:{
 				id:true
@@ -130,8 +148,9 @@ blogRouter.put('/:id',zValidator('json',blogInput,(result, c) => {
     }
     catch (e:any) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            return c.text('',400)
+            return c.text('DB Error',400)
         }
+        console.log(e);
         return c.text('Server Error',500)
     }
 })
@@ -144,13 +163,36 @@ blogRouter.get('', async(c) => {
     }).$extends(withAccelerate());
 
 	try{
-        const posts = await prisma.post.findMany({});
+        const posts = await prisma.post.findMany({
+            where:{
+                OR:[
+                    {
+                        authorId: c.get("userId"),
+                    },
+                    {
+                        published: true,
+                    }
+                ]
+            },
+            select:{
+				id:true,
+				title:true,
+				content:true,
+				published:true,
+                publishDate:true,
+                author:{
+                    select:{
+                        name:true
+                    }
+                }
+			}
+        });
     
         return c.json(posts);
     }
     catch (e:any) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            return c.text('',400)
+            return c.text('DB Error',400)
         }
         return c.text('Server Error',500)
     }
