@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { Signup } from './pages/Signup'
 import { Signin } from './pages/Signin'
 import { Blogs } from './pages/Blogs'
@@ -18,6 +18,7 @@ function App() {
           <Route path="/blogs" element={<Blogs />} />
           <Route path='/create' element={<Create/>}/>
           <Route path='/create/:id' element={<Create/>}/>
+          <Route path="*" element={<Navigate to='/signup'/>}/>
         </Routes>
       </BrowserRouter>
     </>
