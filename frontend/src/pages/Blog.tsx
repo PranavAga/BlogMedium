@@ -42,7 +42,10 @@ export const Blog = ()=>{
                         <div className="text-5xl font-bold">
                             {blog.title}
                         </div>
+                        {userId==blog.authorId?
                         <EditButton id={blog.id}/>
+                        :null
+                        }
                     </div>
                     <div className="text-grey">
                         {blog.published? "Published on "+new Date(blog.publishDate).toLocaleDateString("en-US",{

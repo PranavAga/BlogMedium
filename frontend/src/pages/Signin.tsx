@@ -27,7 +27,6 @@ export const Signin = ()=>{
 
     const handleSignin = async()=>{
         try{
-            console.log(signinContent)
             const response = await axios.post(`${BACKEND_URL}users/signin`,signinContent);
 
             localStorage.setItem("token",response.data.token);

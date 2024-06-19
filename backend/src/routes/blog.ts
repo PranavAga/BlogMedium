@@ -154,7 +154,6 @@ blogRouter.put('/:id',zValidator('json',blogInput,(result, c) => {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             return c.text('DB Error',400)
         }
-        console.log(e);
         return c.text('Server Error',500)
     }
 })

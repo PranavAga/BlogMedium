@@ -28,7 +28,6 @@ export const Signup = ()=>{
 
     const handleSignup = async()=>{
         try{
-            console.log(signupContent)
             const response = await axios.post(`${BACKEND_URL}users/signup`,signupContent);
 
             localStorage.setItem("token",response.data.token);
