@@ -4,12 +4,21 @@ import { BACKEND_URL } from "../config";
 import { BlogContent } from "../pages/Blog";
 import { useNavigate } from "react-router-dom";
 
-export const useBlog = (id:string) => {
+export const useEdit = (id:string|undefined) => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(true);
-    const [blog, setBlog] = useState<BlogContent>();
-    var userId:string = "";
+    const [blog, setBlog] = useState<BlogContent>({
+        title:"",
+        content:"",
+        published:false,
+        id:id?id:"",
+        publishDate: new Date(),
+        author:{
+            name:""
+        },
+        authorId:""
+    });
 
     useEffect(()=>{
         const getBlog = async(id:string)=>{
@@ -19,7 +28,6 @@ export const useBlog = (id:string) => {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then(response => {
-                    userId = response.data.userId;
                     setBlog(response.data.post);
                     setLoading(false);
                 })
@@ -32,13 +40,18 @@ export const useBlog = (id:string) => {
                 navigate('/blogs');
             }
         }
-        getBlog(id);
+        if(id){
+            getBlog(id);
+        }
+        else{
+            setLoading(false);
+        }
         
     },[id])
 
     return {
         loading,
         blog,
-        userId
+        setBlog
     }
 }

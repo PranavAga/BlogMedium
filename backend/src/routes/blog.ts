@@ -88,6 +88,7 @@ blogRouter.get('/:id', async(c) => {
 				content:true,
 				published:true,
                 publishDate:true,
+                authorId:true,
                 author:{
                     select:{
                         name:true
@@ -100,7 +101,10 @@ blogRouter.get('/:id', async(c) => {
             return c.text("Blog not found, not published, or you don't have access",404);
         }
     
-        return c.json({"post":post[0]});
+        return c.json({
+            "post":post[0],
+            "userId":c.get("userId")
+        });
     }
     catch (e:any) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -180,6 +184,7 @@ blogRouter.get('', async(c) => {
 				content:true,
 				published:true,
                 publishDate:true,
+                authorId:true,
                 author:{
                     select:{
                         name:true
@@ -188,7 +193,10 @@ blogRouter.get('', async(c) => {
 			}
         });
     
-        return c.json(posts);
+        return c.json({
+            'posts':posts,
+            'userId':c.get("userId")
+        });
     }
     catch (e:any) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {

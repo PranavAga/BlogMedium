@@ -7,6 +7,7 @@ export const useBlogs = () => {
 
     const [loading, setLoading] = useState(true);
     const [blogs, setBlogs] = useState<BlogContent[]>([]);
+    const [userId, setUserId] = useState();
 
     useEffect(() => {
         const getBlogs = async()=>{
@@ -17,7 +18,8 @@ export const useBlogs = () => {
                     }
                 })
                 .then(response => {
-                    setBlogs(response.data);
+                    setBlogs(response.data.posts);
+                    setUserId(response.data.userId);
                     setLoading(false);
                 })
             } catch (error) {
@@ -33,6 +35,7 @@ export const useBlogs = () => {
 
     return {
         loading,
-        blogs
+        blogs,
+        userId
     }
 }

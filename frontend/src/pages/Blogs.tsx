@@ -5,7 +5,7 @@ import { Loader } from "../components/Loader";
 
 export const Blogs = ()=>{
 
-    const {loading, blogs} = useBlogs();
+    const {loading, blogs, userId} = useBlogs();
 
     if(loading || !blogs){
         return(
@@ -21,7 +21,7 @@ export const Blogs = ()=>{
                 {blogs.map((blog)=>{
                     return <BlogCard id={blog.id} title={blog.title} content={blog.content} publishedDate= {blog.published? new Date(blog.publishDate).toLocaleDateString("en-US",{
                         year: 'numeric', month: 'long', day: 'numeric'
-                    }):"Not published"} authorName={blog.author.name}/>
+                    }):"Not published"} authorName={blog.author.name} canEdit={blog.authorId == userId? true: false}/>
                 })}
             </div>
         </>

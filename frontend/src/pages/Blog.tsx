@@ -3,10 +3,12 @@ import { BlogInput } from "@pranav_agarwal/blogmedium-common";
 import { Appbar } from "../components/AppBar";
 import { useBlog } from "../hooks/BlogHook";
 import { Loader } from "../components/Loader";
+import { EditButton } from "../components/EditButton";
 
 export type BlogContent = BlogInput & {
     id:string,
     publishDate: Date,
+    authorId: string,
     author:{
         name:string
     },
@@ -17,7 +19,7 @@ export const Blog = ()=>{
 
     const { id } = useParams();
 
-    const {loading, blog} = useBlog(id?id:"");
+    const {loading, blog, userId} = useBlog(id?id:"");
 
     if(loading){
         return(
@@ -27,27 +29,28 @@ export const Blog = ()=>{
     else if(!blog){
         alert('Blog not found')
         navigate('/blogs')
+        return
     }
     
     return(
         <>
             <Appbar/>
-            <div className="flex flex-row ">
+            <div className="flex flex-row space-x-4">
             
                 <div className="w-2/3 ml-16 mt-16 space-y-2">
-                    <div className="text-5xl font-bold">
-                        {blog?.title}
+                    <div className="flex flex-row justify-between">
+                        <div className="text-5xl font-bold">
+                            {blog.title}
+                        </div>
+                        <EditButton id={blog.id}/>
                     </div>
                     <div className="text-grey">
-                        {blog?.published? "Published on "+new Date(blog.publishDate).toLocaleDateString("en-US",{
+                        {blog.published? "Published on "+new Date(blog.publishDate).toLocaleDateString("en-US",{
                             year: 'numeric', month: 'long', day: 'numeric'
                         }):"Not published"}
                     </div>
                     <div className="">
-                        {blog?.content}
-                        
-                        "dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content "
-                        
+                        {blog.content}                        
                     </div>
                 </div>
                 <div className="w-1/3 mr-16 mt-16">
@@ -55,9 +58,8 @@ export const Blog = ()=>{
                         Author
                     </div>
                     <div className="text-xl font-bold">
-                        {blog?.author.name}
+                        {blog.author.name}
                     </div>
-                    "dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content dummy content "
                 </div>
             </div>
         </>
